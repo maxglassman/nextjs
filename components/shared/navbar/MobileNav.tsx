@@ -13,7 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { sidebarLinks } from "@/constants";
 import { usePathname } from "next/navigation";
 
@@ -106,13 +106,6 @@ const MobileNav = () => {
             </div>
           </SignedOut>
         </div>
-        <SheetHeader>
-          <SheetTitle>Are you sure absolutely sure?</SheetTitle>
-          <SheetDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </SheetDescription>
-        </SheetHeader>
       </SheetContent>
     </Sheet>
   );
