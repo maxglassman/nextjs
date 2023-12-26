@@ -85,5 +85,4 @@ const RightSideBar = () => {
   );
 };
 
-//TODO
 export default RightSideBar;
