@@ -1,28 +1,54 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import React from "react";
 
-interface Props {
-  searchName: string;
+interface CustomInputProps {
+  route: string;
+  iconPosition: string;
+  imgSrc: string;
+  placeholder: string;
+  otherClasses?: string;
 }
 
-const LocalSearch = ({ searchName }: Props) => {
+const LocalSearch = ({
+  route,
+  iconPosition,
+  imgSrc,
+  placeholder,
+  otherClasses,
+}: CustomInputProps) => {
   return (
     <div className="relative w-full">
-      <div className="background-light800_darkgradient relative flex min-h-[24px] grow items-center gap-1 rounded-xl px-4">
-        <Image
-          src="/assets/icons/search.svg"
-          width={24}
-          height={24}
-          alt="Search"
-          className="cursor-pointer"
-        />
+      <div
+        className={`background-light800_darkgradient relative flex min-h-[24px] grow items-center gap-1 rounded-xl px-4 ${otherClasses}`}
+      >
+        {iconPosition === "left" && (
+          <Image
+            src={imgSrc}
+            width={24}
+            height={24}
+            alt="Search"
+            className="cursor-pointer"
+          />
+        )}
         <Input
           type="text"
-          placeholder={`Search ${searchName}...`}
+          placeholder={placeholder}
           value=""
+          onChange={() => {}}
           className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
         />
+        {iconPosition === "right" && (
+          <Image
+            src={imgSrc}
+            width={24}
+            height={24}
+            alt="Search"
+            className="cursor-pointer"
+          />
+        )}
       </div>
     </div>
   );

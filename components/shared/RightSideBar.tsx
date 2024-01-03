@@ -6,14 +6,19 @@ import RenderTag from "./RenderTag";
 
 const dummyTags = [
   {
-    _id: 1,
+    _id: "1",
     name: "Javascript",
     totalQuestions: 1234,
     showTotalQuestions: true,
   },
-  { _id: 2, name: "Python", totalQuestions: 1234, showTotalQuestions: true },
-  { _id: 3, name: "C++", totalQuestions: 1234, showTotalQuestions: true },
-  { _id: 4, name: "React.JS", totalQuestions: 1234, showTotalQuestions: true },
+  { _id: "2", name: "Python", totalQuestions: 1234, showTotalQuestions: true },
+  { _id: "3", name: "C++", totalQuestions: 1234, showTotalQuestions: true },
+  {
+    _id: "4",
+    name: "React.JS",
+    totalQuestions: 1234,
+    showTotalQuestions: true,
+  },
 ];
 
 const TopQuestions = () => {
