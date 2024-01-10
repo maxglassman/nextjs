@@ -45,7 +45,8 @@ const page = async () => {
   }
 
   const mongoUserId = await getUserById({ userId });
-  console.log(mongoUserId);
+  console.log(`userId: ${userId}`);
+  console.log(`mongoUserId: ${mongoUserId}`);
 
   return (
     <div className="flex flex-col gap-9 overflow-auto z-10">
