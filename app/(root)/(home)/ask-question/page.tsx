@@ -39,12 +39,10 @@ const QuestionPageItem = ({
 };
 
 const page = async () => {
-  // const { userId } = auth();
-  // if (!userId) {
-  //   redirect("/sign-in");
-  // }
-
-  const userId = "12345";
+  const { userId } = auth();
+  if (!userId) {
+    redirect("/sign-in");
+  }
 
   const mongoUserId = await getUserById({ userId });
   console.log(mongoUserId);
