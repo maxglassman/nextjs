@@ -3,14 +3,33 @@
 import Tag from "@/database/tag.model";
 import { connectToDatabase } from "../mongoose";
 import Question from "@/database/question.model";
+import { GetQuestionsParams, createQuestionParams } from "./shared.types";
+import User from "@/database/user.model";
+import { revalidatePath } from "next/cache";
 
-export async function createQuestion(params: any) {
+export async function getQuestions(params: GetQuestionsParams) {
+  try {
+    connectToDatabase();
+    const { page, pageSize, sort } = params;
+    const questions = await Question.find({})
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({ path: "author", model: User })
+      .sort({ createdAt: -1 }); // sort by createdAt descending
+    return { questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function createQuestion(params: createQuestionParams) {
   try {
     connectToDatabase();
     const { title, content, tags, author, path } = params;
 
-    console.log(tags);
-    console.log(typeof tags);
     const question = await Question.create({ title, content, author });
     const tagDocuments = [];
 
@@ -28,8 +47,19 @@ export async function createQuestion(params: any) {
     });
 
     //Create an interaction record for the user's ask_question
+    // await User.findOneAndUpdate(
+    //   { clerkId: author },
+    //   {
+    //     $push: {
+    //       interactions: { type: "ask_question", question: question._id },
+    //     },
+    //   },
+    //   { upsert: true, new: true }
+    // );
 
     //Increment author's reputation by 5
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
   }

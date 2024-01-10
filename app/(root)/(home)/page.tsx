@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -9,6 +7,7 @@ import Filters from "@/components/shared/filters/Filters";
 import { HomePageFilters } from "@/constants/filters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/shared/cards/QuestionCard";
+import { getQuestions } from "@/lib/actions/question.action";
 
 const questions = [
   {
@@ -47,7 +46,8 @@ const questions = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const result = await getQuestions({});
   return (
     <div>
       <div className="flex justify-between items-center max-sm:flex-col-reverse">
@@ -74,9 +74,19 @@ export default function Home() {
         <HomeFilter />
       </div>
       <div className="mt-10 w-full flex flex-col gap-4 ">
-        {questions.length > 0 ? (
-          questions.map((question) => (
-            <QuestionCard key={question._id} {...question} />
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
+            <QuestionCard
+              key={question._id}
+              _id={question._id}
+              title={question.title}
+              tags={question.tags}
+              author={question.author}
+              upvotes={question.upvotes}
+              answers={question.answers}
+              views={question.views}
+              createdAt={question.createdAt}
+            />
           ))
         ) : (
           <NoResult

@@ -39,13 +39,15 @@ const QuestionPageItem = ({
 };
 
 const page = async () => {
-  //const { userId } = auth();
+  // const { userId } = auth();
+  // if (!userId) {
+  //   redirect("/sign-in");
+  // }
+
   const userId = "12345";
-  if (!userId) {
-    redirect("/sign-in");
-  }
 
   const mongoUserId = await getUserById({ userId });
+  console.log(mongoUserId);
 
   return (
     <div className="flex flex-col gap-9 overflow-auto z-10">

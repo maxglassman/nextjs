@@ -21,7 +21,6 @@ export function numberToString(num: any): string {
 export function timeAgo(createdAt: Date): string {
   // Get the current date
   const now = new Date();
-
   // Calculate the difference in milliseconds
   const diff = now.getTime() - createdAt.getTime();
 
