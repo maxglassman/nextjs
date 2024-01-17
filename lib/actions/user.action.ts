@@ -5,6 +5,7 @@ import User from "@/database/user.model";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
@@ -17,6 +18,22 @@ export async function getUserById(params: any) {
     const { userId } = params;
     const user = await User.findOne({ clerkId: userId });
     return user;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+//create an async function called getUsers that takes in a parameter called params of type GetAllUsersParams, and returns a Promise of type User[]. The function should apply the params to the User.find() query if params are not null, and return the result.
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase();
+
+    const { page = 1, pageSize = 24, searchQuery, filter } = params;
+
+    const users = await User.find({}).sort({ createdAt: -1 });
+
+    return users;
   } catch (error) {
     console.log(error);
     throw error;

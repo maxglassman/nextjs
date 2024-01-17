@@ -125,8 +125,8 @@ export interface GetUserByIdParams {
 export interface GetAllUsersParams {
   page?: number;
   pageSize?: number;
-  filter?: string;
-  searchQuery?: string; // Add searchQuery parameter
+  filter?: string | null;
+  searchQuery?: string | null; // Add searchQuery parameter
 }
 
 export interface UpdateUserParams {
