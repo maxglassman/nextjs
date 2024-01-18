@@ -4,8 +4,6 @@ import { UserFilters } from "@/constants/filters";
 import React from "react";
 import { getAllUsers } from "@/lib/actions/user.action";
 import UserCard from "@/components/shared/cards/UserCard";
-import { useSearchParams } from "next/navigation";
-import fetch from "node-fetch";
 
 const page = async () => {
   //get all users from mongodb
