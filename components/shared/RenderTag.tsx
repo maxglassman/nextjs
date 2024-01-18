@@ -7,6 +7,7 @@ interface Props {
   name: string;
   totalQuestions?: number;
   showTotalQuestions?: boolean;
+  otherClasses?: string;
 }
 
 const RenderTag = ({
