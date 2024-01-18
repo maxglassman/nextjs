@@ -42,7 +42,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
       .populate({ path: "author", model: User });
     console.log(question);
 
-    return { question };
+    return question;
   } catch (error) {
     console.log(error);
     throw error;
