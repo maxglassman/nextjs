@@ -5,7 +5,7 @@ import React from "react";
 import { getAllUsers } from "@/lib/actions/user.action";
 import UserCard from "@/components/shared/cards/UserCard";
 
-const page = async () => {
+const Page = async () => {
   //get all users from mongodb
 
   const users = await getAllUsers({});
@@ -41,4 +41,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;

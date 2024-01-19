@@ -13,31 +13,6 @@ interface Props {
   inputComponent?: React.ReactNode;
 }
 
-const QuestionPageItem = ({
-  questionPrompt,
-  inputComponent,
-  tip,
-  mandatory,
-}: Props) => {
-  return (
-    <div className="flex flex-col gap-3">
-      <p className="body-regular text-dark400_light700">
-        {questionPrompt}
-        {mandatory && <span className="text-red-400">*</span>}
-      </p>
-      {inputComponent ? (
-        inputComponent
-      ) : (
-        <input
-          type="text"
-          className=" border rounded-md border-slate-400 dark:border-slate-200 light-border background-light700_dark400  p-4 mt-2"
-        />
-      )}
-      <p className="body-regular text-light-500">{tip}</p>
-    </div>
-  );
-};
-
 const page = async () => {
   const { userId } = auth();
   if (!userId) {
@@ -45,8 +20,6 @@ const page = async () => {
   }
 
   const mongoUserId = await getUserById({ userId });
-  console.log(`userId: ${userId}`);
-  console.log(`mongoUserId: ${mongoUserId}`);
 
   return (
     <div className="flex flex-col gap-9 overflow-auto z-10">

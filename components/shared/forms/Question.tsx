@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { set, useForm } from "react-hook-form";
-import QuestionsSchema from "@/lib/validations";
+import { QuestionsSchema } from "@/lib/validations";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {

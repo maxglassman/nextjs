@@ -16,6 +16,12 @@ export interface createQuestionParams {
   author: Schema.Types.ObjectId | IUser;
   path: string;
 }
+export interface CreateAnswerParams {
+  content: string;
+  author: Schema.Types.ObjectId | IUser;
+  question: Schema.Types.ObjectId;
+  path: string;
+}
 
 export interface AnswerVoteParams {
   answerId: string;
