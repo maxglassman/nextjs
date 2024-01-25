@@ -15,11 +15,9 @@ import { getAnswers } from "@/lib/actions/answer.action";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Vote from "@/components/shared/Vote";
+import { mongo } from "mongoose";
 
 const Page = async ({ params }: { params: { questionId: string } }) => {
-  // const question = await getQuestionById(params);
-  // const answers = await getAnswers(params);
-
   const [question, answers] = await Promise.all([
     getQuestionById(params),
     getAnswers(params),
@@ -47,43 +45,14 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
         />
         <Vote
           isQuestion={true}
-          upvotes={question.upvotes}
-          downvotes={question.downvotes}
+          upvotes={question.upvotes.length}
+          downvotes={question.downvotes.length}
+          hasUpvoted={question.upvotes.includes(mongoUserId._id)}
+          hasDownvoted={question.downvotes.includes(mongoUserId._id)}
+          hasStarred={mongoUserId.saved.includes(question._id)}
           user={JSON.stringify(mongoUserId)}
-          id={question._id.toString()}
+          itemId={question._id.toString()}
         />
-        {/* <div className="flex flex-row gap-2">
-          {/*Need to add functionality for upvotes, downvotes, and star
-          <Metric
-            imgUrl="/assets/icons/upvote.svg"
-            alt="Upvotes"
-            imgWidth={18}
-            imgHeight={18}
-            value={`${question.upvotes + 0}`}
-            title=""
-            href="" //Need to add functionality for upvotes
-            textStyles="background-light700_dark400 subtle-medium text-dark400_light700  px-2 py-1 text-center"
-          />
-          <Metric
-            imgUrl="/assets/icons/downvote.svg"
-            alt="Downvotes"
-            imgWidth={18}
-            imgHeight={18}
-            value={`${question.downvotes + 0}`}
-            title=""
-            href="" //Need to add functionality for downvotes
-            textStyles="background-light700_dark400 subtle-medium text-dark400_light700  px-2 py-1 text-center"
-          />
-          <Link href="/">
-            <Image
-              src="/assets/icons/star-red.svg"
-              alt="Star"
-              width={18}
-              height={18}
-              className="ml-1"
-            />
-          </Link>
-        </div> */}
       </div>
       <h2 className="h2-semibold text-dark100_light900 mt-[14px]">
         {question.title}
@@ -139,10 +108,13 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
           <>
             <AnswerCard
               key={answer._id}
-              _id={answer._id}
+              answerId={answer._id.toString()}
+              user={JSON.stringify(mongoUserId)}
               content={answer.content}
               upvotes={answer.upvotes.length}
               downvotes={answer.downvotes.length}
+              hasUpvoted={answer.upvotes.includes(mongoUserId._id)}
+              hasDownvoted={answer.downvotes.includes(mongoUserId._id)}
               author={answer.author}
               createdAt={answer.createdAt}
             />

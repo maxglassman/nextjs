@@ -149,6 +149,11 @@ export interface UpdateUserParams {
   path: string;
 }
 
+export interface UserSaveQuestionParams {
+  userId: string;
+  questionId: string;
+}
+
 export interface ToggleSaveQuestionParams {
   userId: string;
   questionId: string;

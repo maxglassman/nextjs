@@ -105,8 +105,7 @@ export async function upvoteQuestion(params: VoteQuestionParams) {
       question.downvotes.pull(userId);
     }
 
-    await question.save();
-    revalidatePath(path);
+    question.save();
   } catch (error) {
     console.log(error);
     throw error;
@@ -117,6 +116,7 @@ export async function downvoteQuestion(params: VoteQuestionParams) {
   try {
     connectToDatabase();
     const { questionId, userId, path } = params;
+    console.log(params);
 
     const question = await getQuestionById({ questionId });
     if (question.downvotes.includes(userId)) {
@@ -129,8 +129,7 @@ export async function downvoteQuestion(params: VoteQuestionParams) {
       question.upvotes.pull(userId);
     }
 
-    await question.save();
-    revalidatePath(path);
+    question.save();
   } catch (error) {
     console.log(error);
     throw error;

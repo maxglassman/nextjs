@@ -3,21 +3,28 @@ import Image from "next/image";
 import Metric from "../Metric";
 import ParseHTML from "../ParseHTML";
 import { timeAgo } from "@/lib/utils";
+import Vote from "../Vote";
 
 interface Props {
-  _id: string;
+  answerId: string;
+  user: string;
   content: string;
   upvotes: number;
   downvotes: number;
+  hasUpvoted: boolean;
+  hasDownvoted: boolean;
   author: { _id: string; name: string; picture: string };
   createdAt: Date;
 }
 
 const AnswerCard = ({
-  _id,
+  answerId,
+  user,
   content,
   upvotes,
   downvotes,
+  hasUpvoted,
+  hasDownvoted,
   author,
   createdAt,
 }: Props) => {
@@ -33,8 +40,17 @@ const AnswerCard = ({
           isAuthor={true}
           textStyles="body-medium text-dark400_light700"
         />
-        <div className="flex flex-row gap-2">
-          {/*Need to add functionality for upvotes, downvotes, and star*/}
+        <Vote
+          isQuestion={false}
+          upvotes={upvotes}
+          downvotes={downvotes}
+          hasUpvoted={hasUpvoted}
+          hasDownvoted={hasDownvoted}
+          user={user}
+          itemId={answerId}
+        />
+        {/* <div className="flex flex-row gap-2">
+          {/*Need to add functionality for upvotes, downvotes, and star
           <Metric
             imgUrl="/assets/icons/upvote.svg"
             alt="Upvotes"
@@ -55,7 +71,7 @@ const AnswerCard = ({
             href="" //Need to add functionality for downvotes
             textStyles="background-light700_dark400 subtle-medium text-dark400_light700  px-2 py-1 text-center"
           />
-        </div>
+        </div> */}
       </section>
       <ParseHTML data={content} />
     </>

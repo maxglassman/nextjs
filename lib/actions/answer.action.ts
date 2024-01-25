@@ -65,51 +65,41 @@ export async function upvoteAnswer(params: VoteAnswerParams) {
   try {
     connectToDatabase();
     const { answerId, userId, path } = params;
-
     const answer = await getAnswerById({ answerId });
-    answer.upvotes.push(userId);
+
+    if (answer.upvotes.includes(userId)) {
+      answer.upvotes.pull(userId);
+    } else {
+      answer.upvotes.push(userId);
+    }
+
+    if (answer.downvotes.includes(userId)) {
+      answer.downvotes.pull(userId);
+    }
+
     answer.save();
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
-
-export async function removeUpvoteAnswer(params: VoteAnswerParams) {
-  try {
-    connectToDatabase();
-    const { answerId, userId, path } = params;
-
-    const answer = await getAnswerById({ answerId });
-    answer.upvotes.pull(userId);
-    answer.save();
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
 export async function downvoteAnswer(params: VoteAnswerParams) {
   try {
     connectToDatabase();
     const { answerId, userId, path } = params;
+    console.log(params);
 
     const answer = await getAnswerById({ answerId });
-    answer.upvotes.push(userId);
-    answer.save();
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
+    if (answer.downvotes.includes(userId)) {
+      answer.downvotes.pull(userId);
+    } else {
+      answer.downvotes.push(userId);
+    }
 
-export async function removeDownvoteAnswer(params: VoteAnswerParams) {
-  try {
-    connectToDatabase();
-    const { answerId, userId, path } = params;
+    if (answer.upvotes.includes(userId)) {
+      answer.upvotes.pull(userId);
+    }
 
-    const answer = await getAnswerById({ answerId });
-    answer.upvotes.pull(userId);
     answer.save();
   } catch (error) {
     console.log(error);

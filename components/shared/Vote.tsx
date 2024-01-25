@@ -1,52 +1,72 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { numberToString } from "@/lib/utils";
 import {
-  getQuestionById,
   upvoteQuestion,
   downvoteQuestion,
 } from "@/lib/actions/question.action";
-import {
-  upvoteAnswer,
-  downvoteAnswer,
-  removeUpvoteAnswer,
-  removeDownvoteAnswer,
-} from "@/lib/actions/answer.action";
+import { upvoteAnswer, downvoteAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { userSaveQuestion } from "@/lib/actions/user.action";
 
 interface Props {
   isQuestion: boolean;
-  upvotes: any[];
-  downvotes: any[];
+  upvotes: number;
+  downvotes: number;
+  hasUpvoted: boolean;
+  hasDownvoted: boolean;
+  hasStarred?: boolean;
   user: string;
-  id: string;
+  itemId: string;
 }
 interface HandleVoteParams {
   isQuestion: boolean;
-  id: string;
+  itemId: string;
   userId: string;
 }
 
-const Vote = ({ isQuestion, upvotes, downvotes, user, id }: Props) => {
-  const { userId } = JSON.parse(user);
-
+const Vote = ({
+  isQuestion,
+  upvotes,
+  downvotes,
+  hasUpvoted,
+  hasDownvoted,
+  hasStarred,
+  user,
+  itemId,
+}: Props) => {
+  const userId = JSON.parse(user)._id;
   const pathName = usePathname();
+  const [upvotedStatus, setUpvotedStatus] = useState(hasUpvoted);
+  const [downvotedStatus, setDownvotedStatus] = useState(hasDownvoted);
+  const [starredStatus, setStarredStatus] = useState(hasStarred);
+  const [upvoteCount, setUpvoteCount] = useState(upvotes);
+  const [downvoteCount, setDownvoteCount] = useState(downvotes);
 
-  const hasUpvoted = upvotes.includes(userId);
-  const hasDownvoted = downvotes.includes(userId);
-
-  const handleUpvote = async ({ isQuestion, id, userId }: HandleVoteParams) => {
+  const handleUpvote = ({ isQuestion, itemId, userId }: HandleVoteParams) => {
     try {
+      if (upvotedStatus) {
+        setUpvotedStatus(false);
+        setUpvoteCount(upvoteCount - 1);
+      } else {
+        if (downvotedStatus) {
+          setDownvotedStatus(false);
+          setDownvoteCount(downvoteCount - 1);
+        }
+        setUpvotedStatus(true);
+        setUpvoteCount(upvoteCount + 1);
+      }
+
       if (isQuestion) {
-        await upvoteQuestion({
-          questionId: id,
+        upvoteQuestion({
+          questionId: itemId,
           userId: userId,
           path: pathName,
         });
       } else {
-        await upvoteAnswer({
-          answerId: id,
+        upvoteAnswer({
+          answerId: itemId,
           userId: userId,
           path: pathName,
         });
@@ -56,25 +76,53 @@ const Vote = ({ isQuestion, upvotes, downvotes, user, id }: Props) => {
       throw error;
     }
   };
-  const handleDownvote = async ({
-    isQuestion,
-    id,
-    userId,
-  }: HandleVoteParams) => {
+  const handleDownvote = ({ isQuestion, itemId, userId }: HandleVoteParams) => {
     try {
+      if (downvotedStatus) {
+        setDownvotedStatus(false);
+        setDownvoteCount(downvoteCount - 1);
+      } else {
+        if (upvotedStatus) {
+          setUpvotedStatus(false);
+          setUpvoteCount(upvoteCount - 1);
+        }
+        setDownvotedStatus(true);
+        setDownvoteCount(downvoteCount + 1);
+      }
       if (isQuestion) {
-        await downvoteQuestion({
-          questionId: id,
+        downvoteQuestion({
+          questionId: itemId,
           userId: userId,
           path: pathName,
         });
       } else {
-        await downvoteAnswer({
-          answerId: id,
+        downvoteAnswer({
+          answerId: itemId,
           userId: userId,
           path: pathName,
         });
       }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  interface StarredProps {
+    itemId: string;
+    userId: string;
+  }
+  const handleStarred = async ({ itemId, userId }: StarredProps) => {
+    try {
+      if (starredStatus) {
+        setStarredStatus(false);
+      } else {
+        setStarredStatus(true);
+      }
+      userSaveQuestion({
+        questionId: itemId,
+        userId: userId,
+      });
     } catch (error) {
       console.log(error);
       throw error;
@@ -85,45 +133,48 @@ const Vote = ({ isQuestion, upvotes, downvotes, user, id }: Props) => {
     <div className="flex flex-row gap-2">
       <Image
         src={
-          isQuestion || hasUpvoted
+          isQuestion || upvotedStatus
             ? "/assets/icons/upvoted.svg"
             : "/assets/icons/upvote.svg"
         }
         alt="Upvotes"
         width={18}
         height={18}
-        onClick={() => handleUpvote({ isQuestion, id, userId })}
+        onClick={() => handleUpvote({ isQuestion, itemId, userId })}
         className="hover:cursor-pointer"
       />
       <p className="background-light700_dark400 w-[18px] h-[18px] px-[5px] py-[3px] justify-center subtle-regular text-dark400_light900 items-center">
-        {numberToString(upvotes.length)}
+        {numberToString(upvoteCount)}
       </p>
       <Image
         src={
-          isQuestion || hasDownvoted
+          isQuestion || downvotedStatus
             ? "/assets/icons/downvoted.svg"
             : "/assets/icons/downvote.svg"
         }
         alt="Downvotes"
         width={18}
         height={18}
-        onClick={() => handleDownvote({ isQuestion, id, userId })}
+        onClick={() => handleDownvote({ isQuestion, itemId, userId })}
         className="hover:cursor-pointer"
       />
       <p className="background-light700_dark400 w-[18px] h-[18px] px-[5px] py-[3px] justify-center subtle-regular text-dark400_light900 items-center">
-        {numberToString(downvotes.length)}
+        {numberToString(downvoteCount)}
       </p>
-      {/* {question && (
+      {isQuestion && (
         <Image
           src={
-            starred ? "/assets/icons/star-red.svg" : "/assets/icons/star.svg"
+            starredStatus
+              ? "/assets/icons/star-filled.svg"
+              : "/assets/icons/star-red.svg"
           }
           alt="Star"
           width={18}
           height={18}
-          onClick={handleStarred}
+          onClick={() => handleStarred({ itemId, userId })}
+          className="hover:cursor-pointer"
         />
-      )} */}
+      )}
     </div>
   );
 };
