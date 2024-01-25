@@ -53,7 +53,11 @@ const Answer = ({ mongoUser, question }: AnswerProps) => {
         path: path,
       });
 
-      router.refresh();
+      form.reset();
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent("");
+      }
     } catch (error) {
       console.log(error);
       throw error;

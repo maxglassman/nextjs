@@ -23,6 +23,14 @@ export interface CreateAnswerParams {
   path: string;
 }
 
+export interface GetAnswersParams {
+  questionId: string;
+}
+
+export interface GetAnswerParams {
+  answerId: string;
+}
+
 export interface AnswerVoteParams {
   answerId: string;
   userId: string;
@@ -163,4 +171,16 @@ export interface GetUserStatsParams {
 
 export interface DeleteUserParams {
   clerkId: string;
+}
+
+export interface VoteQuestionParams {
+  questionId: string;
+  userId: string;
+  path: string;
+}
+
+export interface VoteAnswerParams {
+  answerId: string;
+  userId: string;
+  path: string;
 }

@@ -7,9 +7,11 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   createQuestionParams,
+  VoteQuestionParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import { get } from "http";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -84,5 +86,53 @@ export async function createQuestion(params: createQuestionParams) {
     revalidatePath(path);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function upvoteQuestion(params: VoteQuestionParams) {
+  try {
+    connectToDatabase();
+    const { questionId, userId, path } = params;
+    const question = await getQuestionById({ questionId });
+
+    if (question.upvotes.includes(userId)) {
+      question.upvotes.pull(userId);
+    } else {
+      question.upvotes.push(userId);
+    }
+
+    if (question.downvotes.includes(userId)) {
+      question.downvotes.pull(userId);
+    }
+
+    await question.save();
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function downvoteQuestion(params: VoteQuestionParams) {
+  try {
+    connectToDatabase();
+    const { questionId, userId, path } = params;
+
+    const question = await getQuestionById({ questionId });
+    if (question.downvotes.includes(userId)) {
+      question.downvotes.pull(userId);
+    } else {
+      question.downvotes.push(userId);
+    }
+
+    if (question.upvotes.includes(userId)) {
+      question.upvotes.pull(userId);
+    }
+
+    await question.save();
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

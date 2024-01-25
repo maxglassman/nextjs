@@ -9,12 +9,22 @@ import ParseHTML from "@/components/shared/ParseHTML";
 import Filters from "@/components/shared/filters/Filters";
 import { AnswerFilters } from "@/constants/filters";
 import Answer from "@/components/shared/forms/Answer";
+import AnswerCard from "@/components/shared/cards/AnswerCard";
 import { getUserById } from "@/lib/actions/user.action";
+import { getAnswers } from "@/lib/actions/answer.action";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import Vote from "@/components/shared/Vote";
 
 const Page = async ({ params }: { params: { questionId: string } }) => {
-  const question = await getQuestionById(params);
+  // const question = await getQuestionById(params);
+  // const answers = await getAnswers(params);
+
+  const [question, answers] = await Promise.all([
+    getQuestionById(params),
+    getAnswers(params),
+  ]);
+
   const { userId } = auth();
   if (!userId) {
     redirect("/sign-in");
@@ -35,8 +45,15 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
           isAuthor={true}
           textStyles="paragraph-semibold text-dark400_light700"
         />
-        <div className="flex flex-row gap-2">
-          {/*Need to add functionality for upvotes, downvotes, and star*/}
+        <Vote
+          isQuestion={true}
+          upvotes={question.upvotes}
+          downvotes={question.downvotes}
+          user={JSON.stringify(mongoUserId)}
+          id={question._id.toString()}
+        />
+        {/* <div className="flex flex-row gap-2">
+          {/*Need to add functionality for upvotes, downvotes, and star
           <Metric
             imgUrl="/assets/icons/upvote.svg"
             alt="Upvotes"
@@ -66,7 +83,7 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
               className="ml-1"
             />
           </Link>
-        </div>
+        </div> */}
       </div>
       <h2 className="h2-semibold text-dark100_light900 mt-[14px]">
         {question.title}
@@ -117,7 +134,22 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
         <p className="paragraph-medium text-primary-500">{`${question.answers.length} Answers`}</p>
         <Filters filters={AnswerFilters} />
       </div>
-      <div className="mt-[40px] border-t-[2px] border-light-800" />
+      {answers.map((answer) => {
+        return (
+          <>
+            <AnswerCard
+              key={answer._id}
+              _id={answer._id}
+              content={answer.content}
+              upvotes={answer.upvotes.length}
+              downvotes={answer.downvotes.length}
+              author={answer.author}
+              createdAt={answer.createdAt}
+            />
+            <div className="mt-[40px] border-t-[2px] border-light-800" />
+          </>
+        );
+      })}
       <Answer
         mongoUser={JSON.stringify(mongoUserId)}
         question={JSON.stringify(question)}
