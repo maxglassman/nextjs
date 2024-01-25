@@ -5,6 +5,8 @@ import { numberToString } from "@/lib/utils";
 
 interface Props {
   imgUrl: string;
+  imgWidth?: number;
+  imgHeight?: number;
   alt: string;
   value: number | string;
   title: string;
@@ -15,6 +17,8 @@ interface Props {
 
 const Metric = ({
   imgUrl,
+  imgWidth = 16,
+  imgHeight = 16,
   alt,
   value,
   title,
@@ -27,8 +31,8 @@ const Metric = ({
       <Image
         src={imgUrl}
         alt={alt}
-        width={16}
-        height={16}
+        width={imgWidth}
+        height={imgHeight}
         className={`object-contain ${href ? "rounded-full" : ""}`}
       />
       <p className={`${textStyles} flex items-center gap-1`}>

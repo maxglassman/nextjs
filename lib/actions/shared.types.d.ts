@@ -16,6 +16,20 @@ export interface createQuestionParams {
   author: Schema.Types.ObjectId | IUser;
   path: string;
 }
+export interface CreateAnswerParams {
+  content: string;
+  author: Schema.Types.ObjectId | IUser;
+  question: Schema.Types.ObjectId;
+  path: string;
+}
+
+export interface GetAnswersParams {
+  questionId: string;
+}
+
+export interface GetAnswerParams {
+  answerId: string;
+}
 
 export interface AnswerVoteParams {
   answerId: string;
@@ -135,6 +149,11 @@ export interface UpdateUserParams {
   path: string;
 }
 
+export interface UserSaveQuestionParams {
+  userId: string;
+  questionId: string;
+}
+
 export interface ToggleSaveQuestionParams {
   userId: string;
   questionId: string;
@@ -157,4 +176,16 @@ export interface GetUserStatsParams {
 
 export interface DeleteUserParams {
   clerkId: string;
+}
+
+export interface VoteQuestionParams {
+  questionId: string;
+  userId: string;
+  path: string;
+}
+
+export interface VoteAnswerParams {
+  answerId: string;
+  userId: string;
+  path: string;
 }

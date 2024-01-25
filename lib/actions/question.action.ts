@@ -3,9 +3,15 @@
 import Tag from "@/database/tag.model";
 import { connectToDatabase } from "../mongoose";
 import Question from "@/database/question.model";
-import { GetQuestionsParams, createQuestionParams } from "./shared.types";
+import {
+  GetQuestionByIdParams,
+  GetQuestionsParams,
+  createQuestionParams,
+  VoteQuestionParams,
+} from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import { get } from "http";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -19,6 +25,24 @@ export async function getQuestions(params: GetQuestionsParams) {
       .populate({ path: "author", model: User })
       .sort({ createdAt: -1 }); // sort by createdAt descending
     return { questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getQuestionById(params: GetQuestionByIdParams) {
+  try {
+    connectToDatabase();
+    const { questionId } = params;
+    const question = await Question.findById(questionId)
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({ path: "author", model: User });
+
+    return question;
   } catch (error) {
     console.log(error);
     throw error;
@@ -62,5 +86,52 @@ export async function createQuestion(params: createQuestionParams) {
     revalidatePath(path);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function upvoteQuestion(params: VoteQuestionParams) {
+  try {
+    connectToDatabase();
+    const { questionId, userId, path } = params;
+    const question = await getQuestionById({ questionId });
+
+    if (question.upvotes.includes(userId)) {
+      question.upvotes.pull(userId);
+    } else {
+      question.upvotes.push(userId);
+    }
+
+    if (question.downvotes.includes(userId)) {
+      question.downvotes.pull(userId);
+    }
+
+    question.save();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function downvoteQuestion(params: VoteQuestionParams) {
+  try {
+    connectToDatabase();
+    const { questionId, userId, path } = params;
+    console.log(params);
+
+    const question = await getQuestionById({ questionId });
+    if (question.downvotes.includes(userId)) {
+      question.downvotes.pull(userId);
+    } else {
+      question.downvotes.push(userId);
+    }
+
+    if (question.upvotes.includes(userId)) {
+      question.upvotes.pull(userId);
+    }
+
+    question.save();
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

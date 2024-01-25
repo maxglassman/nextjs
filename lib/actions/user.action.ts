@@ -7,9 +7,11 @@ import {
   DeleteUserParams,
   GetAllUsersParams,
   UpdateUserParams,
+  UserSaveQuestionParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+import mongoose from "mongoose";
 
 export async function getUserById(params: any) {
   try {
@@ -93,6 +95,30 @@ export async function deleteUser(userData: DeleteUserParams) {
     return deletedUser;
 
     //TODO: delete all answers, comments, etc. by this user
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function userSaveQuestion(params: UserSaveQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, questionId } = params;
+
+    const questionObjectId = new mongoose.Types.ObjectId(questionId);
+
+    const user = await User.findOne({ _id: userId });
+
+    const isSaved = user.saved.includes(questionObjectId);
+
+    if (isSaved) {
+      user.saved.pull(questionObjectId);
+    } else {
+      user.saved.push(questionObjectId);
+    }
+    user.save();
   } catch (error) {
     console.log(error);
     throw error;

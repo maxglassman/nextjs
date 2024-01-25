@@ -26,7 +26,6 @@ const QuestionCard = ({
   answers,
   views,
 }: QuestionCardProps) => {
-  console.log(_id);
   return (
     <div className="card-wrapper p-9 sm:px-11 rounded-[10px] ">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row ">
@@ -50,7 +49,7 @@ const QuestionCard = ({
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric
-          imgUrl="/assets/icons/avatar.svg"
+          imgUrl={author.picture}
           alt="user"
           value={author.name}
           title={` • asked ${timeAgo(createdAt)}`}
