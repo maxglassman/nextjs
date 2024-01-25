@@ -189,3 +189,10 @@ export interface VoteAnswerParams {
   userId: string;
   path: string;
 }
+
+export interface SavedQuestionsParams {
+  userId: string;
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+}

@@ -8,6 +8,7 @@ import {
   GetQuestionsParams,
   createQuestionParams,
   VoteQuestionParams,
+  SavedQuestionsParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
@@ -130,6 +131,26 @@ export async function downvoteQuestion(params: VoteQuestionParams) {
     }
 
     question.save();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getSavedQuestions(params: SavedQuestionsParams) {
+  const { userId, page = 1, pageSize = 24, searchQuery } = params;
+  try {
+    const user = await User.findById(userId);
+    const questions = await Question.find({
+      _id: { $in: user.saved },
+    })
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({ path: "author", model: User });
+
+    return { questions };
   } catch (error) {
     console.log(error);
     throw error;
