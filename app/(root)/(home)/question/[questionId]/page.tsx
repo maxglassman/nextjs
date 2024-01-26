@@ -1,8 +1,6 @@
 import React from "react";
 import { getQuestionById } from "@/lib/actions/question.action";
 import Metric from "@/components/shared/Metric";
-import Image from "next/image";
-import Link from "next/link";
 import { timeAgo } from "@/lib/utils";
 import RenderTag from "@/components/shared/RenderTag";
 import ParseHTML from "@/components/shared/ParseHTML";
@@ -15,7 +13,6 @@ import { getAnswers } from "@/lib/actions/answer.action";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Vote from "@/components/shared/Vote";
-import { mongo } from "mongoose";
 
 const Page = async ({ params }: { params: { questionId: string } }) => {
   const [question, answers] = await Promise.all([

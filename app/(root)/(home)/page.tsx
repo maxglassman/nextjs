@@ -9,43 +9,6 @@ import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/shared/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
 
-const questions = [
-  {
-    _id: "1",
-    title: "Cascading Deletes in SQLAlchemy",
-    tags: [
-      { _id: "1", name: "python" },
-      { _id: "2", name: "sqlalchemy" },
-    ],
-    author: {
-      _id: "author_id_1",
-      name: "John Doe",
-      picture: "author_picture_url_1",
-    },
-    upvotes: 10,
-    answers: [{}], // Assuming no specific structure for answer objects
-    views: 100,
-    createdAt: new Date("2021-05-20T13:00:00.000Z"),
-  },
-  {
-    _id: "2",
-    title: "Understanding React Hooks",
-    tags: [
-      { _id: "3", name: "javascript" },
-      { _id: "4", name: "react" },
-    ],
-    author: {
-      _id: "author_id_2",
-      name: "Jane Smith",
-      picture: "author_picture_url_2",
-    },
-    upvotes: 20,
-    answers: [{}], // Assuming no specific structure for answer objects
-    views: 20000,
-    createdAt: new Date("2021-06-15T09:30:00.000Z"),
-  },
-];
-
 export default async function Home() {
   const result = await getQuestions({});
   return (
@@ -82,8 +45,8 @@ export default async function Home() {
               title={question.title}
               tags={question.tags}
               author={question.author}
-              upvotes={question.upvotes}
-              answers={question.answers}
+              likes={question.upvotes.length}
+              answers={question.answers.length}
               views={question.views}
               createdAt={question.createdAt}
             />

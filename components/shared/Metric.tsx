@@ -36,7 +36,7 @@ const Metric = ({
         className={`object-contain ${href ? "rounded-full" : ""}`}
       />
       <p className={`${textStyles} flex items-center gap-1`}>
-        {numberToString(value)}
+        {numberToString(value || 0)}
         <span
           className={`small-regular line-clamp-1 ${
             isAuthor ? "max-sm:hidden" : ""

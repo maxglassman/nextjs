@@ -11,8 +11,8 @@ interface QuestionCardProps {
   tags: any[];
   author: { _id: string; name: string; picture: string };
   createdAt: Date;
-  upvotes: number;
-  answers: Array<object>;
+  likes: number;
+  answers: number;
   views: number;
 }
 
@@ -22,7 +22,7 @@ const QuestionCard = ({
   tags,
   author,
   createdAt,
-  upvotes,
+  likes,
   answers,
   views,
 }: QuestionCardProps) => {
@@ -60,14 +60,14 @@ const QuestionCard = ({
         <Metric
           imgUrl="/assets/icons/like.svg"
           alt="Upvotes"
-          value={upvotes}
+          value={likes}
           title=" Votes"
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgUrl="/assets/icons/message.svg"
           alt="Answers"
-          value={answers.length}
+          value={answers}
           title=" Answers"
           textStyles="small-medium text-dark400_light800"
         />
