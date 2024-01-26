@@ -15,13 +15,12 @@ const page = async () => {
   const mongoUserId = await getUserById({ userId });
 
   const result = await getSavedQuestions({ userId: mongoUserId._id });
-  console.log(result.questions[0].author);
   return (
     <div>
       <h1 className="h1-bold">Saved Questions</h1>
       <div className="mt-10 w-full flex flex-col gap-4 ">
         {result.questions.length > 0 ? (
-          result.questions.map((question) => (
+          result.questions.map((question: any) => (
             <QuestionCard
               key={question._id}
               _id={question._id}

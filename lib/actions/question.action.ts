@@ -13,6 +13,7 @@ import {
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import { get } from "http";
+import { FilterQuery } from "mongoose";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -139,18 +140,28 @@ export async function downvoteQuestion(params: VoteQuestionParams) {
 
 export async function getSavedQuestions(params: SavedQuestionsParams) {
   const { userId, page = 1, pageSize = 24, searchQuery } = params;
-  try {
-    const user = await User.findById(userId);
-    const questions = await Question.find({
-      _id: { $in: user.saved },
-    })
-      .populate({
-        path: "tags",
-        model: Tag,
-      })
-      .populate({ path: "author", model: User });
 
-    return { questions };
+  const query: FilterQuery<typeof Question> = searchQuery
+    ? { title: { $regex: new RegExp(searchQuery, "i") } }
+    : {};
+  try {
+    const user = await User.findById(userId).populate({
+      path: "saved",
+      match: query,
+      options: {
+        sort: { createdAt: -1 },
+      },
+      populate: [
+        { path: "tags", model: Tag, select: "_id name" },
+        { path: "author", model: User, select: "_id clerkId name picture" },
+      ],
+    });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const saveQuestions = user.saved;
+
+    return { questions: saveQuestions };
   } catch (error) {
     console.log(error);
     throw error;

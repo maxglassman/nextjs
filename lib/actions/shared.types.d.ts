@@ -152,6 +152,10 @@ export interface UpdateUserParams {
 export interface UserSaveQuestionParams {
   userId: string;
   questionId: string;
+  page?: number;
+  pageSize?: number;
+  filter?: string;
+  searchQuery?: string;
 }
 
 export interface ToggleSaveQuestionParams {
