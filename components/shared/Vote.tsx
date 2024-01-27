@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { numberToString } from "@/lib/utils";
 import {
@@ -9,6 +9,8 @@ import {
 import { upvoteAnswer, downvoteAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
 import { userSaveQuestion } from "@/lib/actions/user.action";
+import { viewQuestion } from "@/lib/actions/interaction.action";
+import { useRouter } from "next/navigation";
 
 interface Props {
   isQuestion: boolean;
@@ -38,6 +40,7 @@ const Vote = ({
 }: Props) => {
   const userId = JSON.parse(user)._id;
   const pathName = usePathname();
+  const router = useRouter();
   const [upvotedStatus, setUpvotedStatus] = useState(hasUpvoted);
   const [downvotedStatus, setDownvotedStatus] = useState(hasDownvoted);
   const [starredStatus, setStarredStatus] = useState(hasStarred);
@@ -128,6 +131,15 @@ const Vote = ({
       throw error;
     }
   };
+
+  useEffect(() => {
+    if (isQuestion) {
+      viewQuestion({
+        questionId: itemId,
+        userId: userId ? userId : undefined,
+      });
+    }
+  }, []); // Empty array as second argument
 
   return (
     <div className="flex flex-row gap-2">
