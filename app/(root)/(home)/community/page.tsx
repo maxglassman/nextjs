@@ -17,7 +17,7 @@ const Page = async () => {
 
   return (
     <div>
-      <h1 className="h1-bold">All Users</h1>
+      <h1 className="h1-bold text-dark100_light900">All Users</h1>
       <div className="mt-[30px] gap-3 sm:flex">
         <LocalSearch
           route="community"

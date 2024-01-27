@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import NoResult from "@/components/shared/NoResult";
 import { getSavedQuestions } from "@/lib/actions/question.action";
-import { getUserById } from "@/lib/actions/user.action";
+import { getUserByClerkId } from "@/lib/actions/user.action";
 
 const page = async () => {
   const { userId } = auth();
@@ -12,12 +12,12 @@ const page = async () => {
     redirect("/sign-in");
   }
 
-  const mongoUserId = await getUserById({ userId });
+  const mongoUserId = await getUserByClerkId({ userId });
 
   const result = await getSavedQuestions({ userId: mongoUserId._id });
   return (
     <div>
-      <h1 className="h1-bold">Saved Questions</h1>
+      <h1 className="h1-bold text-dark100_light900">Saved Questions</h1>
       <div className="mt-10 w-full flex flex-col gap-4 ">
         {result.questions.length > 0 ? (
           result.questions.map((question: any) => (

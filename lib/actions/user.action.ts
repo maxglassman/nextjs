@@ -13,7 +13,7 @@ import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import mongoose from "mongoose";
 
-export async function getUserById(params: any) {
+export async function getUserByClerkId(params: any) {
   try {
     connectToDatabase();
 
@@ -25,9 +25,22 @@ export async function getUserById(params: any) {
     throw error;
   }
 }
+export async function getUserById(params: any) {
+  try {
+    connectToDatabase();
 
-//create an async function called getUsers that takes in a parameter called params of type GetAllUsersParams, and returns a Promise of type User[]. The function should apply the params to the User.find() query if params are not null, and return the result.
-export async function getAllUsers(params: GetAllUsersParams) {
+    const { userId } = params;
+
+    const user = await User.findById(userId);
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export //create an async function called getUsers that takes in a parameter called params of type GetAllUsersParams, and returns a Promise of type User[]. The function should apply the params to the User.find() query if params are not null, and return the result.
+async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 

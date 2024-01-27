@@ -8,7 +8,7 @@ import Filters from "@/components/shared/filters/Filters";
 import { AnswerFilters } from "@/constants/filters";
 import Answer from "@/components/shared/forms/Answer";
 import AnswerCard from "@/components/shared/cards/AnswerCard";
-import { getUserById } from "@/lib/actions/user.action";
+import { getUserByClerkId } from "@/lib/actions/user.action";
 import { getAnswers } from "@/lib/actions/answer.action";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
@@ -25,7 +25,7 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
     redirect("/sign-in");
   }
 
-  const mongoUserId = await getUserById({ userId });
+  const mongoUserId = await getUserByClerkId({ userId });
   return (
     <>
       <div className="flex flex-row justify-between items-center max-sm:flex-col-reverse max-sm:gap-4">
