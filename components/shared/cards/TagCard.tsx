@@ -16,9 +16,8 @@ interface TagCardProps {
 const TagCard = ({ tag }: TagCardProps) => {
   //TODO: REMOVE test test in <p> tag
 
-  console.log(tag);
   return (
-    <Link href={`/tag/${tag._id}`} className="shadow-light100_darknone">
+    <Link href={`/tags/${tag._id}`} className="shadow-light100_darknone">
       <article className="flex flex-col justify-between px-[30px] py-[40px] background-light900_dark200  border light-border rounded-md w-full sm:w-[260px]">
         <Badge className="background-light800_dark300 text-dark300_light900 paragraph-semibold rounded-md border-none px-4 py-2 w-fit">
           {tag.name}
