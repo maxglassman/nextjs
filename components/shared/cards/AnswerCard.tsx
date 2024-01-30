@@ -36,7 +36,7 @@ const AnswerCard = ({
           alt="user"
           value={author.name}
           title={` • answered ${timeAgo(createdAt)}`}
-          href={`/profile/${author._id}`}
+          href={`/profile/${JSON.parse(user).clerkId}`}
           isAuthor={true}
           textStyles="body-medium text-dark400_light700"
         />

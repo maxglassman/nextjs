@@ -10,11 +10,13 @@ import {
   VoteQuestionParams,
   SavedQuestionsParams,
   GetQuestionsByTagIdParams,
+  GetQuestionsByUserIdParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import { get } from "http";
 import { FilterQuery } from "mongoose";
+import { skip } from "node:test";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -195,6 +197,32 @@ export async function getQuestionsByTag(params: GetQuestionsByTagIdParams) {
     const tagQuestions = tag.questions;
 
     return { tagTitle: tag.name, tagQuestions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getQuestionsByUserId(params: GetQuestionsByUserIdParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10, searchQuery } = params;
+
+    const query: { userId: string; title?: object } = { userId };
+    if (searchQuery) {
+      query.title = { $regex: new RegExp(searchQuery, "i") };
+    }
+
+    const userQuestions = await Question.find(query)
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({ path: "author", model: User });
+    // .skip((page - 1) * pageSize)
+    // .limit(pageSize);
+
+    return userQuestions;
   } catch (error) {
     console.log(error);
     throw error;

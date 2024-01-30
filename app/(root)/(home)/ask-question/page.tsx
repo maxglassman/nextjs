@@ -4,7 +4,7 @@ import Question from "@/components/shared/forms/Question";
 import React from "react";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { getUserById } from "@/lib/actions/user.action";
+import { getUserByClerkId } from "@/lib/actions/user.action";
 
 interface Props {
   questionPrompt: string;
@@ -19,7 +19,7 @@ const page = async () => {
     redirect("/sign-in");
   }
 
-  const mongoUserId = await getUserById({ userId });
+  const mongoUserId = await getUserByClerkId({ userId });
 
   return (
     <div className="flex flex-col gap-9 overflow-auto z-10">

@@ -5,11 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebarLinks } from "@/constants";
 import Image from "next/image";
-import { SignedIn, SignedOut, SignOutButton } from "@clerk/nextjs";
+import {
+  RedirectToUserProfile,
+  SignedIn,
+  SignedOut,
+  SignOutButton,
+  useAuth,
+} from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 
 const MenuContent = () => {
   const pathname = usePathname();
+  const { userId } = useAuth();
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -17,6 +24,14 @@ const MenuContent = () => {
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
+
+        if (item.route === "/profile") {
+          if (userId) {
+            item.route = `/profile/${userId}`;
+          } else {
+            return null;
+          }
+        }
         return (
           <Link
             key={item.label}

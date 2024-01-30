@@ -21,7 +21,7 @@ const UserCard = async ({ user }: UserCardProps) => {
 
   return (
     <Link
-      href={`/profile/${user.clerkId}`}
+      href={`/profile/${user._id}`}
       className="background-light900_dark200 border light-border rounded-lg shadow-md p-6 text-center w-[266px]"
     >
       <article>
