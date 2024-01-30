@@ -119,6 +119,13 @@ export interface GetQuestionsByTagIdParams {
   searchQuery?: string;
 }
 
+export interface GetQuestionsByUserIdParams {
+  userId: string;
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+}
+
 export interface GetTopInteractedTagsParams {
   userId: string;
   limit?: number;

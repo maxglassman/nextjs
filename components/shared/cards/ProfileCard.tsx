@@ -1,9 +1,12 @@
 import React from "react";
 import Image from "next/image";
 import { timeAgo } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { SignedIn } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 
 interface Props {
-  _id: string;
+  clerkId: string;
   picture: string;
   name: string;
   username: string;
@@ -12,7 +15,7 @@ interface Props {
   createdAt: Date;
 }
 const ProfileCard = ({
-  _id,
+  clerkId,
   picture,
   name,
   username,
@@ -20,6 +23,7 @@ const ProfileCard = ({
   location,
   createdAt,
 }: Props) => {
+  const { userId } = auth();
   return (
     <div className="flex gap-4">
       <Image
@@ -67,6 +71,11 @@ const ProfileCard = ({
             </p>
           </div>
         </div>
+      </div>
+      <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
+        <SignedIn>
+          {clerkId === userId && <Button>Edit Profile</Button>}
+        </SignedIn>
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
           alt="user"
           value={question.author.name}
           title=""
-          href={`/profile/${question.author._id}`}
+          href={`/profile/${userId}`}
           isAuthor={true}
           textStyles="paragraph-semibold text-dark400_light700"
         />

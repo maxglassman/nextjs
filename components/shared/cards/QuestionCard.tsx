@@ -9,7 +9,7 @@ interface QuestionCardProps {
   _id: string;
   title: string;
   tags: any[];
-  author: { _id: string; name: string; picture: string };
+  author: { _id: string; clerkId: string; name: string; picture: string };
   createdAt: Date;
   likes: number;
   answers: number;
@@ -53,7 +53,7 @@ const QuestionCard = ({
           alt="user"
           value={author.name}
           title={` • asked ${timeAgo(createdAt)}`}
-          href={`/profile/${author._id}`}
+          href={`/profile/${author.clerkId}`}
           isAuthor={true}
           textStyles="body-medium text-dark400_light700"
         />

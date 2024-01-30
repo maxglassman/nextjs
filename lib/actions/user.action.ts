@@ -6,11 +6,13 @@ import {
   CreateUserParams,
   DeleteUserParams,
   GetAllUsersParams,
+  GetUserStatsParams,
   UpdateUserParams,
   UserSaveQuestionParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+import Answer from "@/database/answer.model";
 import mongoose from "mongoose";
 
 export async function getUserByClerkId(params: any) {
@@ -132,6 +134,27 @@ export async function userSaveQuestion(params: UserSaveQuestionParams) {
       user.saved.push(questionObjectId);
     }
     user.save();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserStats(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    //create a query that returns the number of questions and answers for a given userId.
+    const { userId } = params;
+
+    const [questionCount, answerCount] = await Promise.all([
+      Question.countDocuments({ author: JSON.parse(userId) }),
+      Answer.countDocuments({ author: JSON.parse(userId) }),
+    ]);
+
+    return {
+      questionCount,
+      answerCount,
+    };
   } catch (error) {
     console.log(error);
     throw error;
