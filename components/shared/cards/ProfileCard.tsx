@@ -4,6 +4,7 @@ import { timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs";
+import Link from "next/link";
 
 interface Props {
   clerkId: string;
@@ -74,7 +75,13 @@ const ProfileCard = ({
       </div>
       <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
         <SignedIn>
-          {clerkId === userId && <Button>Edit Profile</Button>}
+          {clerkId === userId && (
+            <Link href={`/profile/edit/${clerkId}`}>
+              <Button className="background-light800_dark400 text-dark300_light900">
+                Edit Profile
+              </Button>
+            </Link>
+          )}
         </SignedIn>
       </div>
     </div>

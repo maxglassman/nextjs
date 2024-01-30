@@ -6,6 +6,7 @@ import {
   GetAnswersParams,
   GetAnswerParams,
   VoteAnswerParams,
+  GetAnswersByUserIdParams,
 } from "./shared.types";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
@@ -101,6 +102,24 @@ export async function downvoteAnswer(params: VoteAnswerParams) {
     }
 
     answer.save();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getAnswersByUserId(params: GetAnswersByUserIdParams) {
+  try {
+    connectToDatabase();
+    const { userId } = params;
+    const answers = await Answer.find({ author: userId })
+      .populate({
+        path: "author",
+        select: "_id clerkId name picture",
+      })
+      .sort({ createdAt: -1 });
+
+    return answers;
   } catch (error) {
     console.log(error);
     throw error;

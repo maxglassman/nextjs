@@ -207,3 +207,10 @@ export interface SavedQuestionsParams {
   pageSize?: number;
   searchQuery?: string;
 }
+
+export interface GetAnswersByUserIdParams {
+  userId: string;
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+}
