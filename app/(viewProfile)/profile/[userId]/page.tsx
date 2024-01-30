@@ -9,9 +9,17 @@ import ItemCard from "@/components/shared/cards/ItemCard";
 import { getQuestionsByUserId } from "@/lib/actions/question.action";
 import QuestionCard from "@/components/shared/cards/QuestionCard";
 import RenderTag from "@/components/shared/RenderTag";
-import { redirect } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import QuestionsTab from "@/components/shared/QuestionsTab";
+import AnswersTab from "@/components/shared/AnswersTab";
 
-const Page = async ({ params }: { params: { userId: string } }) => {
+const Page = async ({
+  params,
+  searchParams,
+}: {
+  params: { userId: string };
+  searchParams: { q: string };
+}) => {
   const { userId } = params;
   const user = await getUserByClerkId({ userId });
 
@@ -39,7 +47,7 @@ const Page = async ({ params }: { params: { userId: string } }) => {
         </p>
       )}
       <h3 className="h3-bold text-dark100_light900 mt-4">Stats</h3>
-      <div className="flex flex-wrap mt-5 gap-5">
+      <div className="mt-5 gap-5 grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
         <ItemCard
           type="non-badge"
           title1="Questions"
@@ -67,26 +75,25 @@ const Page = async ({ params }: { params: { userId: string } }) => {
         />
       </div>
       <div className="flex mt-12 gap-10">
-        <div className="flex flex-col w-full">
-          <h3 className="h3-bold text-dark100_light900">Top Posts</h3>
-          <div className="flex flex-col mt-5 gap-5">
-            {userQuestions.map((question) => {
-              return (
-                <QuestionCard
-                  key={question._id}
-                  _id={question._id}
-                  title={question.title}
-                  tags={question.tags}
-                  author={question.author}
-                  likes={question.upvotes.length}
-                  answers={question.answers.length}
-                  views={question.views}
-                  createdAt={question.createdAt}
-                />
-              );
-            })}
-          </div>
-        </div>
+        <Tabs defaultValue="top-posts" className="flex-1">
+          <TabsList className="background-light800_dark400 min-h-[42px] p-1">
+            <TabsTrigger value="top-posts" className="tab">
+              Top Posts
+            </TabsTrigger>
+            <TabsTrigger value="answers" className="tab">
+              Answers
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="top-posts">
+            <QuestionsTab userId={user._id} searchParams={searchParams} />
+          </TabsContent>
+          <TabsContent value="answers">
+            <AnswersTab
+              user={JSON.stringify(user)}
+              searchParams={searchParams}
+            />
+          </TabsContent>
+        </Tabs>
         <div className="flex flex-col w-fit">
           <h3 className="h3-bold text-dark100_light900"> Top Tags</h3>
           <div className="flex flex-col mt-5 gap-5">

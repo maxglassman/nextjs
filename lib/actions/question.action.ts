@@ -208,12 +208,15 @@ export async function getQuestionsByUserId(params: GetQuestionsByUserIdParams) {
     connectToDatabase();
     const { userId, page = 1, pageSize = 10, searchQuery } = params;
 
+    const totalQuestions = await Question.countDocuments({ userId });
+
     const query: { userId: string; title?: object } = { userId };
     if (searchQuery) {
       query.title = { $regex: new RegExp(searchQuery, "i") };
     }
 
     const userQuestions = await Question.find(query)
+      .sort({ views: -1, upvotes: -1 })
       .populate({
         path: "tags",
         model: Tag,

@@ -34,7 +34,7 @@ const ItemCard = ({
 }: ItemCardProps) => {
   return (
     <div
-      className={`flex w-[257px] h-[90px] background-light900_dark300 border light-border-1  rounded-md shadow-md dark:border-none  ${
+      className={`flex flex-wrap min-h-[90px] min-w-[200px] background-light900_dark300 border light-border-1  rounded-md shadow-md dark:border-none  ${
         type == "non-badge"
           ? "px-[43px] items-center py-[25px] justify-center"
           : "px-[24px]"
