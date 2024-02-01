@@ -1,6 +1,8 @@
 "use server";
 
 import Tag, { ITag } from "@/database/tag.model";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 import { connectToDatabase } from "../mongoose";
 import Question from "@/database/question.model";
 import {
@@ -11,6 +13,7 @@ import {
   SavedQuestionsParams,
   GetQuestionsByTagIdParams,
   GetQuestionsByUserIdParams,
+  DeleteQuestionParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
@@ -226,6 +229,30 @@ export async function getQuestionsByUserId(params: GetQuestionsByUserIdParams) {
     // .limit(pageSize);
 
     return userQuestions;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  //create a try catch block that connects to the database and deletes the questionId and calls deleteAnswer() to delete all answers associated with the questionId.
+  try {
+    connectToDatabase();
+    const { questionId, path } = params;
+
+    // Assuming you're using Mongoose with a Question model and delete all answers associated with the questionId
+    await Promise.all([
+      Question.deleteOne({ _id: questionId }),
+      Answer.deleteMany({ question: questionId }),
+      Interaction.deleteMany({ question: questionId }),
+      Tag.updateMany(
+        { questions: questionId },
+        { $pull: { questions: questionId } }
+      ),
+    ]);
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;

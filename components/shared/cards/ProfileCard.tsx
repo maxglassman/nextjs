@@ -37,7 +37,7 @@ const ProfileCard = ({
       <div className="flex flex-col justify-between py-2 gap-2">
         <h1 className="h1-bold text-dark100_light900">{name}</h1>
         <p className="small-regular text-dark400_light700">{`@${username}`}</p>
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-2 gap-2">
           {website && (
             <div className="flex gap-1">
               <Image
@@ -76,7 +76,7 @@ const ProfileCard = ({
       <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
         <SignedIn>
           {clerkId === userId && (
-            <Link href={`/profile/edit/${clerkId}`}>
+            <Link href={`/profile/${clerkId}/edit`}>
               <Button className="background-light800_dark400 text-dark300_light900">
                 Edit Profile
               </Button>
