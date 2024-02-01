@@ -35,15 +35,13 @@ const Page = async ({
         picture={user.picture}
         name={user.name}
         username={user.username}
-        website={user.website}
+        website={user.portfolioWebsite}
         location={user.location}
         createdAt={user.createdAt}
       />
-      {user.bio || (
+      {user.bio && (
         <p className="flex paragraph-regular text-dark400_light700 mt-4 justify-center w-fit min-w-[300px] px-[150px]">
-          This is where the user bio would go. This is where the user bio would
-          go. This is where the user bio would go. This is where the user bio
-          would go. This is where the user bio would go.
+          {user.bio}
         </p>
       )}
       <h3 className="h3-bold text-dark100_light900 mt-4">Stats</h3>

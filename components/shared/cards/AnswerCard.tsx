@@ -4,6 +4,8 @@ import Metric from "../Metric";
 import ParseHTML from "../ParseHTML";
 import { timeAgo } from "@/lib/utils";
 import Vote from "../Vote";
+import EditDeleteAction from "../EditDeleteAction";
+import { SignedIn, auth } from "@clerk/nextjs";
 
 interface Props {
   answerId: string;
@@ -28,6 +30,8 @@ const AnswerCard = ({
   author,
   createdAt,
 }: Props) => {
+  const showActionButtons =
+    JSON.parse(user).clerkId && JSON.parse(user).clerkId === auth().userId;
   return (
     <>
       <section className="flex justify-between mt-8">
@@ -49,6 +53,11 @@ const AnswerCard = ({
           user={user}
           itemId={answerId}
         />
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction type="Answer" itemId={JSON.stringify(answerId)} />
+          )}
+        </SignedIn>
         {/* <div className="flex flex-row gap-2">
           {/*Need to add functionality for upvotes, downvotes, and star
           <Metric

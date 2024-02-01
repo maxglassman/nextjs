@@ -7,9 +7,11 @@ import {
   GetAnswerParams,
   VoteAnswerParams,
   GetAnswersByUserIdParams,
+  DeleteAnswerParams,
 } from "./shared.types";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
+import Interaction from "@/database/interaction.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -120,6 +122,35 @@ export async function getAnswersByUserId(params: GetAnswersByUserIdParams) {
       .sort({ createdAt: -1 });
 
     return answers;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteAnswer(params: DeleteAnswerParams) {
+  //create a try catch block that connects to the database and deletes the questionId and calls deleteAnswer() to delete all answers associated with the questionId.
+  try {
+    connectToDatabase();
+    const { answerId, path } = params;
+
+    const answer = await Answer.findById(answerId);
+
+    if (!answer) {
+      throw new Error("Answer not found");
+    }
+
+    // Assuming you're using Mongoose with a Question model and delete all answers associated with the questionId
+    await Promise.all([
+      Answer.deleteOne({ _id: answerId }),
+      Question.updateOne(
+        { _id: answer.question },
+        { $pull: { answers: answerId } }
+      ),
+      Interaction.deleteMany({ answer: answerId }),
+    ]);
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;

@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Metric from "../Metric";
 import { timeAgo } from "@/lib/utils";
+import { SignedIn, auth } from "@clerk/nextjs";
+import EditDeleteAction from "../EditDeleteAction";
 
 interface QuestionCardProps {
   _id: string;
@@ -26,6 +28,7 @@ const QuestionCard = ({
   answers,
   views,
 }: QuestionCardProps) => {
+  const showActionButtons = author.clerkId && author.clerkId === auth().userId;
   return (
     <div className="card-wrapper p-9 sm:px-11 rounded-[10px] ">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row ">
@@ -39,7 +42,11 @@ const QuestionCard = ({
             </h3>
           </Link>
         </div>
-        {/*If signed in, show edit/delete buttons*/}
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <div className="mt-3.5 flex flex-wrap gap-2">
