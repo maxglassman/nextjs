@@ -20,11 +20,7 @@ export async function getTopInteractedTagsParams(
     // Find interactions for the user and group by tags...
     // Interaction...
 
-    return [
-      { _id: "1", name: "tag1" },
-      { _id: "2", name: "tag2" },
-      { _id: "3", name: "tag3" },
-    ];
+    return;
   } catch (error) {
     console.log(error);
     throw error;
@@ -38,6 +34,37 @@ export async function getAllTags(params: GetAllTagsParams) {
     const { page = 1, pageSize = 24, searchQuery, filter } = params;
 
     const tags = await Tag.find({}).sort({ createdAt: -1 });
+
+    return tags;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getTopPopularTags(params: {
+  page: number;
+  pageSize: number;
+  limit: number;
+}) {
+  try {
+    connectToDatabase();
+
+    const { page = 1, pageSize = 5, limit = 5 } = params;
+
+    const tags = await Tag.aggregate([
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          totalQuestions: { $size: "$questions" },
+        },
+      },
+      { $sort: { totalQuestions: -1 } },
+      { $limit: limit },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]);
 
     return tags;
   } catch (error) {
