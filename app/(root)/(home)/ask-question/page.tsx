@@ -24,7 +24,7 @@ const page = async () => {
   return (
     <div className="flex flex-col gap-9 overflow-auto z-10">
       <h1 className="h1-bold text-dark100_light900">Ask a Public Question</h1>
-      <Question mongoUserId={JSON.stringify(mongoUserId)} />
+      <Question type="create" mongoUserId={JSON.stringify(mongoUserId)} />
       {/* <QuestionPageItem
         questionPrompt="Question Title"
         tip="Be specific and imagine you’re asking a question to another person."
