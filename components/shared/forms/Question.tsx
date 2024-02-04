@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, updateQuestion } from "@/lib/actions/question.action";
 import { auth } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -26,18 +26,30 @@ const type: any = "create";
 
 interface Props {
   mongoUserId: string;
+  type: string;
+  questionId?: string;
+  title?: string;
+  content?: string;
+  tags?: string[];
 }
 
-const Question = ({ mongoUserId }: Props) => {
+const Question = ({
+  mongoUserId,
+  title,
+  content,
+  tags,
+  type,
+  questionId,
+}: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const pathName = usePathname();
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: title ? title : "",
+      explanation: content ? content : "",
+      tags: tags ? tags : [],
     },
   });
 
@@ -53,15 +65,25 @@ const Question = ({ mongoUserId }: Props) => {
       // contain all form data
       //navigate to home page
 
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        author: JSON.parse(mongoUserId),
-        tags: values.tags,
-        path: pathName,
-      });
+      if (type === "create") {
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          author: JSON.parse(mongoUserId),
+          tags: values.tags,
+          path: pathName,
+        });
 
-      router.push("/");
+        router.push("/");
+      } else if (type === "edit") {
+        await updateQuestion({
+          questionId: questionId || "",
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          path: pathName,
+        });
+      }
     } catch (error) {
     } finally {
       setIsSubmitting(false);
@@ -144,7 +166,7 @@ const Question = ({ mongoUserId }: Props) => {
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue=""
+                  initialValue={content ? content : ""}
                   init={{
                     height: 350,
                     menubar: false,

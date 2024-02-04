@@ -15,8 +15,9 @@ import { redirect } from "next/navigation";
 import Vote from "@/components/shared/Vote";
 
 const Page = async ({ params }: { params: { questionId: string } }) => {
+  const { questionId } = params;
   const [question, answers] = await Promise.all([
-    getQuestionById(params),
+    getQuestionById({ questionId: questionId }),
     getAnswers(params),
   ]);
 

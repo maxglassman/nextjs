@@ -75,7 +75,7 @@ export async function createQuestion(params: createQuestionParams) {
     }
 
     await Question.findByIdAndUpdate(question._id, {
-      $push: { tags: { $each: tagDocuments } },
+      $addToSet: { tags: { $each: tagDocuments } },
     });
 
     //Create an interaction record for the user's ask_question
@@ -253,6 +253,63 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     ]);
 
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function updateQuestion(params: {
+  questionId: string;
+  title: string;
+  content: string;
+  tags: string[];
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+    const { questionId, title, content, tags, path } = params;
+
+    const tagDocuments = [];
+
+    for (const tag of tags) {
+      const existingTag = await Tag.findOneAndUpdate(
+        { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+        { $setOnInsert: { name: tag }, $push: { questions: questionId } },
+        { upsert: true, new: true }
+      );
+      tagDocuments.push(existingTag);
+    }
+
+    await Question.findByIdAndUpdate(questionId, {
+      $set: { title, content },
+      $addToSet: { tags: { $each: tagDocuments } },
+    });
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getHotQuestions(params: {
+  page: number;
+  pageSize: number;
+}) {
+  try {
+    connectToDatabase();
+    const { page, pageSize } = params;
+    const questions = await Question.find({})
+      .sort({ views: -1, upvotes: -1 })
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({ path: "author", model: User })
+      .limit(pageSize)
+      .skip((page - 1) * pageSize);
+
+    return questions;
   } catch (error) {
     console.log(error);
     throw error;

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import React from "react";
 import RenderTag from "./RenderTag";
+import { getHotQuestions } from "@/lib/actions/question.action";
 
 const dummyTags = [
   {
@@ -21,39 +22,20 @@ const dummyTags = [
   },
 ];
 
-const TopQuestions = () => {
-  const dummyQuestions = [
-    {
-      qid: 1,
-      question:
-        "Would it be appropriate to point out an error in another paper during a referee report?",
-    },
-    {
-      qid: 2,
-      question: "How can an airconditioning machine exist?",
-    },
-    {
-      qid: 3,
-      question: "Interrogated every time crossing UK Border as citizen",
-    },
-    { qid: 4, question: "Low digit addition generator", link: "/dummy" },
-    {
-      qid: 5,
-      question: "What is an example of 3 numbers that do not make up a vector?",
-    },
-  ];
-
+const TopQuestions = async () => {
+  const hotQuestions = await getHotQuestions({ page: 1, pageSize: 5 });
+  console.log(hotQuestions);
   return (
     <div className="mt-7 w-full flex flex-col gap-[30px]">
-      {dummyQuestions.map((question) => {
+      {hotQuestions.map((question) => {
         return (
           <Link
             key={question.qid}
-            href={`/questions/${question.qid}`}
+            href={`/question/${question._id}`}
             className="flex cursor-pointer items-center justify-between flex-row gap-7"
           >
             <p className="body-medium text-dark500_light700">
-              {question.question}
+              {question.title}
             </p>
             <Image
               src="/assets/icons/right.svg"
