@@ -45,3 +45,34 @@ export async function getAllTags(params: GetAllTagsParams) {
     throw error;
   }
 }
+
+export async function getTopPopularTags(params: {
+  page: number;
+  pageSize: number;
+  limit: number;
+}) {
+  try {
+    connectToDatabase();
+
+    const { page = 1, pageSize = 5, limit = 5 } = params;
+
+    const tags = await Tag.aggregate([
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          totalQuestions: { $size: "$questions" },
+        },
+      },
+      { $sort: { totalQuestions: -1 } },
+      { $limit: limit },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]);
+
+    return tags;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

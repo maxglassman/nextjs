@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import React from "react";
 import RenderTag from "./RenderTag";
 import { getHotQuestions } from "@/lib/actions/question.action";
+import { getTopPopularTags } from "@/lib/actions/tag.action";
 
 const dummyTags = [
   {
@@ -24,7 +25,6 @@ const dummyTags = [
 
 const TopQuestions = async () => {
   const hotQuestions = await getHotQuestions({ page: 1, pageSize: 5 });
-  console.log(hotQuestions);
   return (
     <div className="mt-7 w-full flex flex-col gap-[30px]">
       {hotQuestions.map((question) => {
@@ -51,7 +51,9 @@ const TopQuestions = async () => {
   );
 };
 
-const RightSideBar = () => {
+const RightSideBar = async () => {
+  const topTags = await getTopPopularTags({ page: 1, pageSize: 5, limit: 5 });
+  console.log(topTags);
   return (
     <section className="custom-scrollbar background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[350px] flex-col  overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
@@ -63,8 +65,16 @@ const RightSideBar = () => {
           Popular Tags
         </h3>
         <section className="mt-7 w-full flex flex-col gap-[30px]">
-          {dummyTags.map((tag) => {
-            return <RenderTag key={tag._id} {...tag} />;
+          {topTags.map((tag) => {
+            return (
+              <RenderTag
+                key={tag._id}
+                _id={tag._id}
+                name={tag.name}
+                totalQuestions={tag.totalQuestions}
+                showTotalQuestions={true}
+              />
+            );
           })}
         </section>
       </div>
