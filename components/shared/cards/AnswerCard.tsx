@@ -55,7 +55,7 @@ const AnswerCard = ({
         />
         <SignedIn>
           {showActionButtons && (
-            <EditDeleteAction type="Answer" itemId={JSON.stringify(answerId)} />
+            <EditDeleteAction type="Answer" itemId={answerId} />
           )}
         </SignedIn>
         {/* <div className="flex flex-row gap-2">

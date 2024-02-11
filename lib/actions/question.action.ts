@@ -24,8 +24,18 @@ import { skip } from "node:test";
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const { page, pageSize, sort } = params;
-    const questions = await Question.find({})
+    const { page = 1, pageSize = 10, sort, searchQuery, filter } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    const questions = await Question.find(query)
       .populate({
         path: "tags",
         model: Tag,

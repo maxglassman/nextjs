@@ -49,7 +49,7 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
           hasDownvoted={question.downvotes.includes(mongoUserId._id)}
           hasStarred={mongoUserId.saved.includes(question._id)}
           user={JSON.stringify(mongoUserId)}
-          itemId={question._id.toString()}
+          itemId={question._id}
         />
       </div>
       <h2 className="h2-semibold text-dark100_light900 mt-[14px]">

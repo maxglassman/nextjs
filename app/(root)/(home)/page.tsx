@@ -9,8 +9,12 @@ import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/shared/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
 
-export default async function Home() {
-  const result = await getQuestions({});
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { q: string };
+}) {
+  const result = await getQuestions({ searchQuery: searchParams.q });
   return (
     <div>
       <div className="flex justify-between items-center max-sm:flex-col-reverse">
@@ -23,7 +27,7 @@ export default async function Home() {
       </div>
       <div className="mt-[30px] max-md:flex max-md:gap-2">
         <LocalSearch
-          route="questions"
+          route="/"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search for questions"
@@ -40,8 +44,8 @@ export default async function Home() {
         {result.questions.length > 0 ? (
           result.questions.map((question) => (
             <QuestionCard
-              key={question._id}
-              _id={question._id}
+              key={JSON.stringify(question._id)}
+              _id={JSON.stringify(question._id)}
               title={question.title}
               tags={question.tags}
               author={question.author}

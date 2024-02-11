@@ -2,7 +2,9 @@
 
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import React from "react";
+import React, { use, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 
 interface CustomInputProps {
   route: string;
@@ -19,6 +21,34 @@ const LocalSearch = ({
   placeholder,
   otherClasses,
 }: CustomInputProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get("q");
+
+  const [search, setSearch] = useState(query || "");
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (search) {
+        const newUrl = formUrlQuery({
+          params: searchParams.toString(),
+          key: "q",
+          value: search,
+        });
+        router.push(newUrl, { scroll: false });
+      } else {
+        const newUrl = removeKeysFromQuery({
+          params: searchParams.toString(),
+          keys: ["q"],
+        });
+        router.push(newUrl, { scroll: false });
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, route, pathname, router, searchParams, query]);
+
   return (
     <div className="relative w-full">
       <div
@@ -36,7 +66,8 @@ const LocalSearch = ({
         <Input
           type="text"
           placeholder={placeholder}
-          onChange={() => {}}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
         />
         {iconPosition === "right" && (

@@ -48,6 +48,8 @@ const QuestionSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+QuestionSchema.index({ title: "text", content: "text" });
+
 const Question =
   models.Question || model<IQuestion>("Question", QuestionSchema);
 
