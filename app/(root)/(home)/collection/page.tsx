@@ -6,7 +6,7 @@ import NoResult from "@/components/shared/NoResult";
 import { getSavedQuestions } from "@/lib/actions/question.action";
 import { getUserByClerkId } from "@/lib/actions/user.action";
 
-const page = async () => {
+const page = async ({ searchParams }: { searchParams: { q: string } }) => {
   const { userId } = auth();
   if (!userId) {
     redirect("/sign-in");
@@ -22,11 +22,11 @@ const page = async () => {
         {result.questions.length > 0 ? (
           result.questions.map((question: any) => (
             <QuestionCard
-              key={question._id}
-              _id={question._id}
+              key={JSON.stringify(question._id)}
+              _id={JSON.stringify(question._id)}
               title={question.title}
               tags={question.tags}
-              author={question.author.clerkId}
+              author={question.author}
               likes={question.upvotes.length}
               answers={question.answers.length}
               views={question.views}

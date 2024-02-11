@@ -13,7 +13,8 @@ import {
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Answer from "@/database/answer.model";
-import mongoose from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
+import { removeSpecialCharacters } from "../utils";
 
 export async function getUserByClerkId(params: any) {
   try {
@@ -48,7 +49,17 @@ async function getAllUsers(params: GetAllUsersParams) {
 
     const { page = 1, pageSize = 24, searchQuery, filter } = params;
 
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const query: FilterQuery<typeof User> = {};
+
+    if (searchQuery) {
+      const cleanSearchQuery = removeSpecialCharacters(searchQuery);
+      query.$or = [
+        { name: { $regex: new RegExp(cleanSearchQuery, "i") } },
+        { username: { $regex: new RegExp(cleanSearchQuery, "i") } },
+      ];
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
 
     return users;
   } catch (error) {

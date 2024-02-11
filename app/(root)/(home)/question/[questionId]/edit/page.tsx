@@ -22,7 +22,7 @@ const Page = async ({ params }: { params: { questionId: string } }) => {
     <div>
       <h1 className="h1-bold">Edit Question</h1>
       <Question
-        mongoUserId={user._id.toString()}
+        mongoUserId={user._id}
         type="edit"
         questionId={questionId}
         title={question.title}
