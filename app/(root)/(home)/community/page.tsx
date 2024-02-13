@@ -5,10 +5,17 @@ import React from "react";
 import { getAllUsers } from "@/lib/actions/user.action";
 import UserCard from "@/components/shared/cards/UserCard";
 
-const Page = async ({ searchParams }: { searchParams: { q: string } }) => {
+const Page = async ({
+  searchParams,
+}: {
+  searchParams: { q: string; filter: string };
+}) => {
   //get all users from mongodb
 
-  const users = await getAllUsers({ searchQuery: searchParams.q });
+  const users = await getAllUsers({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
 
   return (
     <div>

@@ -14,11 +14,15 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Vote from "@/components/shared/Vote";
 
-const Page = async ({ params }: { params: { questionId: string } }) => {
-  const { questionId } = params;
+const Page = async ({
+  params,
+}: {
+  params: { questionId: string; filter: string };
+}) => {
+  const { questionId, filter } = params;
   const [question, answers] = await Promise.all([
     getQuestionById({ questionId: questionId }),
-    getAnswers(params),
+    getAnswers({ questionId: questionId, filter: filter }),
   ]);
 
   const { userId } = auth();

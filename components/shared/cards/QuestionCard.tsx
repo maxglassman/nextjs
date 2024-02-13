@@ -36,7 +36,7 @@ const QuestionCard = ({
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {timeAgo(createdAt)}
           </span>
-          <Link href={`/question/${_id}`}>
+          <Link href={`/question/${_id.replace(/^"|"$/g, "")}`}>
             <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
               {title}
             </h3>
