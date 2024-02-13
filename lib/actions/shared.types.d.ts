@@ -25,6 +25,7 @@ export interface CreateAnswerParams {
 
 export interface GetAnswersParams {
   questionId: string;
+  filter?: string;
 }
 
 export interface GetAnswerParams {

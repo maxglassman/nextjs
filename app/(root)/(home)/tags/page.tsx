@@ -5,10 +5,17 @@ import React from "react";
 import { getAllTags } from "@/lib/actions/tag.action";
 import TagCard from "@/components/shared/cards/TagCard";
 
-const page = async ({ searchParams }: { searchParams: { q: string } }) => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: { q: string; filter: string };
+}) => {
   //get all users from mongodb
 
-  const tags = await getAllTags({ searchQuery: searchParams.q });
+  const tags = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   return (
     <div>
       <h1 className="h1-bold text-dark100_light900">Tags</h1>

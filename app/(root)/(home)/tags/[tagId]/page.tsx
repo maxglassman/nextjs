@@ -23,11 +23,11 @@ const page = async ({
         {result.tagQuestions.length > 0 ? (
           result.tagQuestions.map((question: any) => (
             <QuestionCard
-              key={question._id}
-              _id={question._id}
+              key={JSON.stringify(question._id)}
+              _id={JSON.stringify(question._id)}
               title={question.title}
               tags={question.tags}
-              author={question.author.clerkId}
+              author={question.author}
               likes={question.upvotes.length}
               answers={question.answers.length}
               views={question.views}

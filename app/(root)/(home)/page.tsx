@@ -12,9 +12,12 @@ import { getQuestions } from "@/lib/actions/question.action";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { q: string };
+  searchParams: { q: string; filter: string };
 }) {
-  const result = await getQuestions({ searchQuery: searchParams.q });
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   return (
     <div>
       <div className="flex justify-between items-center max-sm:flex-col-reverse">
