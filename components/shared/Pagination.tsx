@@ -46,9 +46,8 @@ const Pagination = (params: Props) => {
   return (
     <div className="flex justify-center items-center gap-3">
       <button
-        className={`background-light800_dark300 text-dark300_light900 p-2 rounded-sm shadow-md dark:shadow-none body-semibold  ${
-          page == 1 ? "disabled:opacity-50" : ""
-        } `}
+        className="background-light800_dark300 text-dark300_light900 p-2 rounded-sm shadow-md dark:shadow-none body-semibold"
+        disabled={page == 1}
         onClick={() => handlePageChange({ direction: "prev" })}
       >
         Prev
@@ -57,9 +56,8 @@ const Pagination = (params: Props) => {
         {page}
       </p>
       <button
-        className={`background-light800_dark300 text-dark300_light900 p-2 rounded-sm shadow-md dark:shadow-none body-semibold  ${
-          morePages ? "disabled:opacity-50" : ""
-        } `}
+        className="background-light800_dark300 text-dark300_light900 p-2 rounded-sm shadow-md dark:shadow-none body-semibold"
+        disabled={!morePages}
         onClick={() => handlePageChange({ direction: "next" })}
       >
         Next

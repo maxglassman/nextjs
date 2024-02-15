@@ -15,9 +15,12 @@ export default async function Home({
 }: {
   searchParams: { q: string; filter: string; page: string };
 }) {
+  const pageSize = 5;
   const result = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: parseInt(searchParams.page) || 1,
+    pageSize: pageSize,
   });
   return (
     <div>
@@ -69,7 +72,7 @@ export default async function Home({
             buttonText="Ask A Question"
           />
         )}
-        <Pagination morePages={true} />
+        <Pagination morePages={result.moreQuestions} />
       </div>
     </div>
   );

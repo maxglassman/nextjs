@@ -17,7 +17,6 @@ import {
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
-import { get } from "http";
 import { FilterQuery } from "mongoose";
 import { skip } from "node:test";
 
@@ -25,6 +24,8 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
     const { page = 1, pageSize = 10, sort, searchQuery, filter } = params;
+
+    const skipAmount = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -50,14 +51,20 @@ export async function getQuestions(params: GetQuestionsParams) {
         break;
     }
 
+    const totalQuestions = await Question.countDocuments(query);
     const questions = await Question.find(query)
       .populate({
         path: "tags",
         model: Tag,
       })
       .populate({ path: "author", model: User })
+      .skip(skipAmount)
+      .limit(pageSize)
       .sort(sortOptions); // sort by createdAt descending
-    return { questions };
+
+    const moreQuestions = totalQuestions > skipAmount + questions.length;
+
+    return { questions, moreQuestions };
   } catch (error) {
     console.log(error);
     throw error;
