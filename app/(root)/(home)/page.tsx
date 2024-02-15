@@ -8,15 +8,19 @@ import { HomePageFilters } from "@/constants/filters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/shared/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
+import Pagination from "@/components/shared/Pagination";
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { q: string; filter: string };
+  searchParams: { q: string; filter: string; page: string };
 }) {
+  const pageSize = 5;
   const result = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: parseInt(searchParams.page) || 1,
+    pageSize: pageSize,
   });
   return (
     <div>
@@ -68,6 +72,7 @@ export default async function Home({
             buttonText="Ask A Question"
           />
         )}
+        <Pagination morePages={result.moreQuestions} />
       </div>
     </div>
   );
