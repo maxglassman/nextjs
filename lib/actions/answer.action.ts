@@ -12,6 +12,7 @@ import {
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import Interaction from "@/database/interaction.model";
+import { FilterQuery } from "mongoose";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -34,7 +35,19 @@ export async function createAnswer(params: CreateAnswerParams) {
 export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
-    const { questionId, filter } = params;
+    const { page = 1, pageSize = 10, questionId, filter, searchQuery } = params;
+
+    const query: FilterQuery<typeof Answer> = {};
+
+    const skipAmount = (page - 1) * pageSize;
+
+    if (questionId) {
+      query.question = questionId;
+    }
+
+    if (searchQuery) {
+      query.$or = [{ content: { $regex: new RegExp(searchQuery, "i") } }];
+    }
 
     let sortOptions = {};
     switch (filter) {
@@ -53,11 +66,13 @@ export async function getAnswers(params: GetAnswersParams) {
       default:
         break;
     }
-    const answers = await Answer.find({ question: questionId })
+    const answers = await Answer.find(query)
       .populate({
         path: "author",
         select: "_id clerkId name picture",
       })
+      .skip(skipAmount)
+      .limit(pageSize)
       .sort(sortOptions);
 
     return answers;

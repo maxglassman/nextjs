@@ -50,6 +50,7 @@ async function getAllUsers(params: GetAllUsersParams) {
     const { page = 1, pageSize = 24, searchQuery, filter } = params;
 
     const query: FilterQuery<typeof User> = {};
+    const skipAmount = (page - 1) * pageSize;
 
     if (searchQuery) {
       const cleanSearchQuery = removeSpecialCharacters(searchQuery);
@@ -74,7 +75,10 @@ async function getAllUsers(params: GetAllUsersParams) {
         break;
     }
 
-    const users = await User.find(query).sort(sortOptions);
+    const users = await User.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize);
 
     return users;
   } catch (error) {
