@@ -24,7 +24,10 @@ export interface CreateAnswerParams {
 }
 
 export interface GetAnswersParams {
-  questionId: string;
+  questionId?: string;
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
   filter?: string;
 }
 

@@ -32,6 +32,8 @@ const AnswerCard = ({
 }: Props) => {
   const showActionButtons =
     JSON.parse(user).clerkId && JSON.parse(user).clerkId === auth().userId;
+
+  console.log(JSON.parse(user).clerkId, auth().userId, showActionButtons);
   return (
     <>
       <section className="flex justify-between mt-8">
